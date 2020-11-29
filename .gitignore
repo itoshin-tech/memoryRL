@@ -1,0 +1,5 @@
+.pyc
+agt_data/
+__pycache__/
+.dot
+.pylintrc

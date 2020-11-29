@@ -1,11 +1,11 @@
 """
 sim_swanptour.py
-池巡りの実行ファイル
+廊下の実行ファイル
 """
 import sys
 import copy
 
-import env_swanptour as envnow
+import env_corridor as envnow
 import trainer
 import mng_agt_history
 
@@ -17,12 +17,12 @@ if __name__ == '__main__':
         MSG = '\n' + \
             '---- 使い方 ---------------------------------------\n' + \
             '3つのパラメータを指定して実行します\n\n' + \
-            '> python sim_swanptour.py [agt_type] [task_type] [process_type]\n\n' + \
-            '[agt_type]\t: q, qnet, lstm, gru\n' + \
-            '[task_type]\t:silent_ruin, open_field, many_swamp, ruin_1swamp, ruin_2swamp \n' + \
-            '\t\tTmaze_both, Tmaze_either\n' + \
-            '[process_type]\t:learn/L, more/M, graph/G, anime/A\n' + \
-            '例 > python sim_swanptour.py q open_field L\n' + \
+            '> python sim_corridor.py [agt_type] [task_type] [process_type]\n' + \
+            '\n' + \
+            '[agt_type]: \tq, qnet, lstm, gru\n' + \
+            '[task_type]: \tL8g23v, L8g23, L8g34, L8g67, L8g34567\n' + \
+            '[process_type]:\tlearn/L, more/M, graph/G, anime/A\n' + \
+            '例 > python sim_corridor.py q L8g23v L\n' + \
             '---------------------------------------------------'
         print(MSG)
         sys.exit()
@@ -66,59 +66,44 @@ if __name__ == '__main__':
         sys.exit()
 
     # task_type paramter /////////////////////
-    if task_type == 'silent_ruin':
+    if task_type == 'L8g23v':
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
-        EARY_STOP_STEP = 15
-        EARY_STOP_REWARD = None
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = 1
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'open_field':
+    elif task_type == 'L8g23':
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
-        EARY_STOP_STEP = 4
-        EARY_STOP_REWARD = 1.2
-        AGT_EPSILON = 0.2
-        AGT_ANIME_EPSILON = 0.0
-
-    elif task_type == 'many_swamp':
-        N_STEP = 5000
-        SHOW_Q_INTERVAL =1000
-        EARY_STOP_STEP = 22
-        EARY_STOP_REWARD = 1.4
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = 1
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'Tmaze_both':
+    elif task_type == 'L8g34':
+
         N_STEP = 5000
-        SHOW_Q_INTERVAL = 200
-        EARY_STOP_STEP = 11
-        EARY_STOP_REWARD = None
+        SHOW_Q_INTERVAL =200
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = 1
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'Tmaze_either':
+    elif task_type == 'L8g67':
         N_STEP = 5000
-        SHOW_Q_INTERVAL = 200
-        EARY_STOP_STEP = 4
-        EARY_STOP_REWARD = None
+        SHOW_Q_INTERVAL =200
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = 1
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'ruin_1swamp':
+    elif task_type == 'L8g34567':
         N_STEP = 5000
-        SHOW_Q_INTERVAL =1000
-        EARY_STOP_STEP = 4.5
-        EARY_STOP_REWARD = None
-        AGT_EPSILON = 0.4
-        AGT_ANIME_EPSILON = 0.0
-
-    elif task_type == 'ruin_2swamp':
-        N_STEP = 5000
-        SHOW_Q_INTERVAL =1000
-        EARY_STOP_STEP = 4.5
-        EARY_STOP_REWARD = None
+        SHOW_Q_INTERVAL =200
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = 1
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
@@ -130,7 +115,7 @@ if __name__ == '__main__':
     env = envnow.Env()
     env.set_task_type(task_type)
     obs = env.reset()
-    obs2, _, _ = env.step(0)
+    obs2, _, _ = env.step(1)
 
     # 評価用環境
     eval_env = envnow.Env()
@@ -206,10 +191,41 @@ if __name__ == '__main__':
     }
 
     # trainer paramter ///////////////
-    obss = [[obs.tolist(), obs2.tolist()]]
+    if task_type == 'L8g23v':
+        obss = [
+            [
+                [1, 0, 3, 0, 0, 0, 0, 0],
+                [0, 1, 3, 0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 3, 1, 0, 0, 0, 0],
+            ],
+            [
+                [1, 0, 0, 3, 0, 0, 0, 0],
+                [0, 1, 0, 3, 0, 0, 0, 0],
+                [0, 0, 1, 3, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0, 0],
+            ],
+        ]
+    elif task_type == 'L8g23':
+        obss = [
+            [
+                [1, 0, 3, 0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0, 0],
+            ],
+            [
+                [1, 0, 0, 3, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0, 0],
+            ],
+        ]
+    else:
+        obss = [[obs.tolist(), obs2.tolist()]]
     trn_prm = {
         'obss': obss,
-        'is_show_Q': False,
+        'is_show_Q': True,
         'show_header': '%s %s ' % (agt_type, task_type),
     }
 
