@@ -103,8 +103,8 @@ class Trainer:
                 self.hist_Qss.append(hist_Qs)
 
                 # 評価
-                eval_rwds_in_episode = -99
-                eval_steps_in_episode = -99
+                eval_rwds_in_episode = None
+                eval_steps_in_episode = None
                 if (eval_N_STEP > 0) or (eval_n_episode > 0):
                     out = self.evaluation(
                         eval_N_STEP=eval_N_STEP,
@@ -121,13 +121,21 @@ class Trainer:
 
                 # 途中経過表示
                 ptime = time.time() - stime
-                print('%s %d --- %d sec, eval_rwd % .2f, eval_steps % .2f' % (
-                        self.show_header,
-                        timestep, ptime,
-                        eval_rwds_in_episode,
-                        eval_steps_in_episode,
+                if eval_rwds_in_episode is not None:
+                    print('%s %d --- %d sec, eval_rwd % .2f, eval_steps % .2f' % (
+                            self.show_header,
+                            timestep, ptime,
+                            eval_rwds_in_episode,
+                            eval_steps_in_episode,
+                            )
                         )
-                    )
+                else:
+                    print('%s %d --- %d sec, no evaluation' % (
+                            self.show_header,
+                            timestep, ptime,
+                            )
+                        )
+
 
                 # 条件をクリアしていたら途中で学習を停止
                 if EARY_STOP_STEP is not None:
@@ -218,7 +226,7 @@ class Trainer:
         return self.eval_simhist
 
     def _show_Q(self):
-        assert isinstance(self.obss) is list
+        assert isinstance(self.obss, list)
 
         self.agt.save_state()
         self.agt.reset()

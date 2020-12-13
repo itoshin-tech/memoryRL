@@ -41,7 +41,7 @@ class MngAgtHistory:
             yval = self.eval_rwds[i]
             xval = self.eval_x[i]
             plt.plot(xval, yval, col[i], marker='.', label=agt_name)
-        plt.title('rwd / episode')
+        plt.title('reward / episode')
         plt.grid(True)
         plt.legend(loc='lower left')
 
@@ -60,7 +60,7 @@ class MngAgtHistory:
                 yval = self.eval_steps[i]
                 xval = self.eval_x[i]
                 plt.plot(xval, yval, col[i], marker='.', linestyle='-', label=agt_name)
-            plt.title('Steps / episode')
+            plt.title('steps / episode')
 
         plt.grid(True)
         plt.legend(loc='lower left')
