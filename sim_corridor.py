@@ -6,6 +6,7 @@ import sys
 import copy
 
 import env_corridor as envnow
+from env_corridor import TaskType
 import trainer
 import mng_agt_history
 
@@ -19,16 +20,24 @@ if __name__ == '__main__':
             '3つのパラメータを指定して実行します\n\n' + \
             '> python sim_corridor.py [agt_type] [task_type] [process_type]\n' + \
             '\n' + \
-            '[agt_type]: \tq, qnet, lstm, gru\n' + \
-            '[task_type]: \tL8g23v, L8g23, L8g34, L8g67, L8g34567\n' + \
-            '[process_type]:\tlearn/L, more/M, graph/G, anime/A\n' + \
+            '[agt_type]\t:q, qnet, lstm, gru\n' + \
+            '[task_type]\t: %s\n' % ', '.join([t.name for t in TaskType]) + \
+            '[process_type]\t:learn/L, more/M, graph/G, anime/A\n' + \
             '例 > python sim_corridor.py q L8g23v L\n' + \
             '---------------------------------------------------'
         print(MSG)
         sys.exit()
 
     agt_type = argvs[1]
-    task_type = argvs[2]
+
+    task_type = TaskType.Enum_of(argvs[2])
+    if task_type is None:
+        MSG = '\n' + \
+            '[task type] が異なります。以下から選んで指定してください。\n' + \
+            '%s\n' % ', '.join([t.name for t in TaskType])
+        print(MSG)
+        sys.exit()
+
     process_type = argvs[3]
 
     ENV_NAME = 'env_swanptour'
@@ -66,7 +75,7 @@ if __name__ == '__main__':
         sys.exit()
 
     # task_type paramter /////////////////////
-    if task_type == 'L8g23v':
+    if task_type == TaskType.L8g23v:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
@@ -74,7 +83,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'L8g23':
+    elif task_type == TaskType.L8g23:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
@@ -82,8 +91,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'L8g34':
-
+    elif task_type == TaskType.L8g34:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
@@ -91,7 +99,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'L8g67':
+    elif task_type == TaskType.L8g67:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
@@ -99,7 +107,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'L8g34567':
+    elif task_type == TaskType.L8g34567:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
@@ -108,8 +116,8 @@ if __name__ == '__main__':
         AGT_ANIME_EPSILON = 0.0
 
     else:
-        print('task_type が間違っています。')
-        sys.exit()
+        raise ValueError('task_type の処理ができません。')
+
 
     # 学習用環境
     env = envnow.Env()
@@ -131,7 +139,7 @@ if __name__ == '__main__':
         'filepath': 'agt_data/sim_' + \
                     ENV_NAME + '_' + \
                     agt_type + '_' + \
-                    task_type
+                    task_type.name
     }
 
     if agt_type == 'q':
@@ -191,7 +199,7 @@ if __name__ == '__main__':
     }
 
     # trainer paramter ///////////////
-    if task_type == 'L8g23v':
+    if task_type == TaskType.L8g23v:
         obss = [
             [
                 [1, 0, 3, 0, 0, 0, 0, 0],
@@ -206,7 +214,7 @@ if __name__ == '__main__':
                 [0, 0, 0, 1, 0, 0, 0, 0],
             ],
         ]
-    elif task_type == 'L8g23':
+    elif task_type == TaskType.L8g23:
         obss = [
             [
                 [1, 0, 3, 0, 0, 0, 0, 0],
@@ -226,7 +234,7 @@ if __name__ == '__main__':
     trn_prm = {
         'obss': obss,
         'is_show_Q': True,
-        'show_header': '%s %s ' % (agt_type, task_type),
+        'show_header': '%s %s ' % (agt_type, task_type.name),
     }
 
     # メイン ///////////////

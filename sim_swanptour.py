@@ -6,6 +6,7 @@ import sys
 import copy
 
 import env_swanptour as envnow
+from env_swanptour import TaskType
 import trainer
 import mng_agt_history
 
@@ -19,8 +20,7 @@ if __name__ == '__main__':
             '3つのパラメータを指定して実行します\n\n' + \
             '> python sim_swanptour.py [agt_type] [task_type] [process_type]\n\n' + \
             '[agt_type]\t: q, qnet, lstm, gru\n' + \
-            '[task_type]\t:silent_ruin, open_field, many_swamp, ruin_1swamp, ruin_2swamp \n' + \
-            '\t\tTmaze_both, Tmaze_either\n' + \
+            '[task_type]\t: %s\n' % ', '.join([t.name for t in TaskType]) + \
             '[process_type]\t:learn/L, more/M, graph/G, anime/A\n' + \
             '例 > python sim_swanptour.py q open_field L\n' + \
             '---------------------------------------------------'
@@ -28,7 +28,15 @@ if __name__ == '__main__':
         sys.exit()
 
     agt_type = argvs[1]
-    task_type = argvs[2]
+
+    task_type = TaskType.Enum_of(argvs[2])
+    if task_type is None:
+        MSG = '\n' + \
+            '[task type] が異なります。以下から選んで指定してください。\n' + \
+            '%s\n' % ', '.join([t.name for t in TaskType])
+        print(MSG)
+        sys.exit()
+
     process_type = argvs[3]
 
     ENV_NAME = 'env_swanptour'
@@ -66,7 +74,7 @@ if __name__ == '__main__':
         sys.exit()
 
     # task_type paramter /////////////////////
-    if task_type == 'silent_ruin':
+    if task_type == TaskType.silent_ruin:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = 15
@@ -74,7 +82,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'open_field':
+    elif task_type == TaskType.open_field:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = 4
@@ -82,7 +90,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.2
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'many_swamp':
+    elif task_type == TaskType.many_swamp:
         N_STEP = 5000
         SHOW_Q_INTERVAL =1000
         EARY_STOP_STEP = 22
@@ -90,7 +98,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'Tmaze_both':
+    elif task_type == TaskType.Tmaze_both:
         N_STEP = 5000
         SHOW_Q_INTERVAL = 200
         EARY_STOP_STEP = 11
@@ -98,7 +106,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'Tmaze_either':
+    elif task_type == TaskType.Tmaze_either:
         N_STEP = 5000
         SHOW_Q_INTERVAL = 200
         EARY_STOP_STEP = 4
@@ -106,7 +114,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'ruin_1swamp':
+    elif task_type == TaskType.ruin_1swamp:
         N_STEP = 5000
         SHOW_Q_INTERVAL =1000
         EARY_STOP_STEP = 4.5
@@ -114,7 +122,7 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
-    elif task_type == 'ruin_2swamp':
+    elif task_type == TaskType.ruin_2swamp:
         N_STEP = 5000
         SHOW_Q_INTERVAL =1000
         EARY_STOP_STEP = 4.5
@@ -123,8 +131,7 @@ if __name__ == '__main__':
         AGT_ANIME_EPSILON = 0.0
 
     else:
-        print('task_type が間違っています。')
-        sys.exit()
+        raise ValueError('task_type の処理ができません。')
 
     # 学習用環境
     env = envnow.Env()
@@ -146,7 +153,7 @@ if __name__ == '__main__':
         'filepath': 'agt_data/sim_' + \
                     ENV_NAME + '_' + \
                     agt_type + '_' + \
-                    task_type
+                    task_type.name
     }
 
     if agt_type == 'q':
@@ -210,7 +217,7 @@ if __name__ == '__main__':
     trn_prm = {
         'obss': obss,
         'is_show_Q': False,
-        'show_header': '%s %s ' % (agt_type, task_type),
+        'show_header': '%s %s ' % (agt_type, task_type.name),
     }
 
     # メイン ///////////////

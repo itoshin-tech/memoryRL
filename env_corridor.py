@@ -3,9 +3,31 @@ env_corridor.py
 廊下の環境
 """
 import sys
+from enum import Enum, auto
 import numpy as np
 import cv2
 import core
+
+
+class TaskType(Enum):
+    """
+    タスクタイプの列挙型
+    """
+    L8g23v = auto()
+    L8g23 = auto()
+    L8g34 = auto()
+    L8g67 = auto()
+    L8g34567 = auto()
+
+    @classmethod
+    def Enum_of(cls, task_str):
+        """
+        タスクの文字列を列挙型に変換
+        """
+        for t in TaskType:
+            if t.name == task_str:
+                return t
+        return None
 
 
 class Env(core.coreEnv):
@@ -17,14 +39,7 @@ class Env(core.coreEnv):
     ID_brank = 0
     ID_agt = 1
     ID_goal = 3
-    # タスクリスト
-    task_list = [
-        'L8g23v',
-        'L8g23',
-        'L8g34',
-        'L8g67',
-        'L8g34567',
-    ]
+
     def __init__(
             self,
             field_length=5,
@@ -83,8 +98,7 @@ class Env(core.coreEnv):
         """
         task_type を指定して、parameterを一括設定する
         """
-        if task_type == Env.task_list[0]:
-            # L8g23v
+        if task_type == TaskType.L8g23v:
             self.field_length = 8
             self.goal_candidate = (2, 3)
             self.pos_start = 0
@@ -93,8 +107,7 @@ class Env(core.coreEnv):
             self.reward_goal = 1
             self.step_until_goal_hidden = -1
 
-        elif task_type == Env.task_list[1]:
-            # L8g23
+        elif task_type == TaskType.L8g23:
             self.field_length = 8
             self.goal_candidate = (2, 3)
             self.pos_start = 0
@@ -103,8 +116,7 @@ class Env(core.coreEnv):
             self.reward_goal = 1
             self.step_until_goal_hidden = 1
 
-        elif task_type == Env.task_list[2]:
-            # L8g34
+        elif task_type == TaskType.L8g34:
             self.field_length = 8
             self.goal_candidate = (3, 4)
             self.pos_start = 0
@@ -113,8 +125,7 @@ class Env(core.coreEnv):
             self.reward_goal = 1
             self.step_until_goal_hidden = 1
 
-        elif task_type == Env.task_list[3]:
-            # L8g67
+        elif task_type == TaskType.L8g67:
             self.field_length = 8
             self.goal_candidate = (6, 7)
             self.pos_start = 0
@@ -123,8 +134,7 @@ class Env(core.coreEnv):
             self.reward_goal = 1
             self.step_until_goal_hidden = 1
 
-        elif task_type == Env.task_list[4]:
-            # L8g34567
+        elif task_type == TaskType.L8g34567:
             self.field_length = 8
             self.goal_candidate = (3, 4, 5, 6, 7)
             self.pos_start = 0
@@ -134,12 +144,7 @@ class Env(core.coreEnv):
             self.step_until_goal_hidden = 1
 
         else:
-            MSG = '[task_type] が違います\n'  + \
-            '%s ではなく、\n' % task_type + \
-            '以下のどれかを指定してください\n' + \
-            '%s' % ', '.join(Env.task_list)
-            print(MSG)
-            sys.exit()
+            raise ValueError('task_type の処理ができません。')
 
 
     def reset(self):
@@ -280,12 +285,20 @@ if __name__ == '__main__':
             '[task type] を指定して実行します\n' + \
             '> python env_corridor.py [task_type]\n' + \
             '[task_type]\n' + \
-            '%s\n' % ', '.join(Env.task_list)
+            '%s\n' % ', '.join([t.name for t in TaskType])
         print(MSG)
         sys.exit()
 
     env = Env()
-    env.set_task_type(argvs[1])
+    ttype = TaskType.Enum_of(argvs[1])
+    if ttype is None:
+        MSG = '\n' + \
+            '[task type] が異なります。以下から選んで指定してください。\n' + \
+            '%s\n' % ', '.join([t.name for t in TaskType])
+        print(MSG)
+        sys.exit()
+
+    env.set_task_type(ttype)
     MSG = '\n' + \
         '---- 操作方法 -------------------------------------\n' + \
         '[f] 右に進む\n' + \

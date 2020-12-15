@@ -3,9 +3,33 @@ env_swanptour.py
 池巡りの環境
 """
 import sys
+from enum import Enum, auto
 import numpy as np
 import cv2
 import core
+
+
+class TaskType(Enum):
+    """
+    タスクタイプの列挙型
+    """
+    silent_ruin = auto()
+    open_field = auto()
+    many_swamp = auto()
+    Tmaze_both = auto()
+    Tmaze_either = auto()
+    ruin_1swamp = auto()
+    ruin_2swamp = auto()
+
+    @classmethod
+    def Enum_of(cls, task_str):
+        """
+        タスクの文字列を列挙型に変換
+        """
+        for t in TaskType:
+            if t.name == task_str:
+                return t
+        return None
 
 
 class Env(core.coreEnv):
@@ -26,17 +50,6 @@ class Env(core.coreEnv):
             [0, 1],
             [1, 0],
         ])
-
-    # タスクリスト
-    task_list = [
-        'silent_ruin',
-        'open_field',
-        'many_swamp',
-        'Tmaze_both',
-        'Tmaze_either',
-        'ruin_1swamp',
-        'ruin_2swamp',
-    ]
 
 
     def __init__(  # pylint:disable=too-many-arguments, too-many-locals
@@ -133,8 +146,7 @@ class Env(core.coreEnv):
         """
         task_type を指定して、parameterを一括設定する
         """
-        if task_type == Env.task_list[0]:
-            # silent_ruin
+        if task_type == TaskType.silent_ruin:
             self.field_size = 5
             self.sight_size = 2
             self.max_time = 25
@@ -151,8 +163,7 @@ class Env(core.coreEnv):
             self.wall_observable = True
             self.step_until_goal_hidden = -1
 
-        elif task_type == Env.task_list[1]:
-            # open_field
+        elif task_type == TaskType.open_field:
             self.field_size = 5
             self.sight_size = 4
             self.max_time = 15
@@ -169,8 +180,7 @@ class Env(core.coreEnv):
             self.wall_observable = False
             self.step_until_goal_hidden = -1
 
-        elif task_type == Env.task_list[2]:
-            # many_swamp
+        elif task_type == TaskType.many_swamp:
             self.field_size = 7
             self.sight_size = 2
             self.max_time = 30
@@ -187,8 +197,7 @@ class Env(core.coreEnv):
             self.wall_observable = True
             self.step_until_goal_hidden = -1
 
-        elif task_type == Env.task_list[3]:
-            # Tmaze_both
+        elif task_type == TaskType.Tmaze_both:
             self.field_size = None
             self.sight_size = 3
             self.max_time = 20
@@ -205,8 +214,7 @@ class Env(core.coreEnv):
             self.wall_observable = True
             self.step_until_goal_hidden = -1
 
-        elif task_type == Env.task_list[4]:
-            # Tmaze_either
+        elif task_type == TaskType.Tmaze_either:
             self.field_size = None
             self.sight_size = 2
             self.max_time = 5
@@ -223,8 +231,7 @@ class Env(core.coreEnv):
             self.wall_observable = True
             self.step_until_goal_hidden = 2
 
-        elif task_type == Env.task_list[5]:
-            # ruin_1swamp
+        elif task_type == TaskType.ruin_1swamp:
             self.field_size = 5
             self.sight_size = 2
             self.max_time = 10
@@ -241,8 +248,7 @@ class Env(core.coreEnv):
             self.wall_observable = True
             self.step_until_goal_hidden = -1
 
-        elif task_type == Env.task_list[6]:
-            # ruin_2swamp
+        elif task_type == TaskType.ruin_2swamp:
             self.field_size = 5
             self.sight_size = 2
             self.max_time = 20
@@ -260,13 +266,7 @@ class Env(core.coreEnv):
             self.step_until_goal_hidden = -1
 
         else:
-            MSG = '[task_type] が違います\n'  + \
-            '%s ではなく、\n' % task_type + \
-            '以下のどれかを指定してください\n' + \
-            '%s' % ', '.join(Env.task_list)
-            print(MSG)
-            sys.exit()
-
+            raise ValueError('task_type の処理ができません。')
 
     def reset(self):
         self.done = False
@@ -782,12 +782,20 @@ if __name__ == '__main__':
             '[task type] を指定して実行します\n' + \
             '> python env_swanptour.py [task_type]\n' + \
             '[task_type]\n' + \
-            '%s\n' % ', '.join(Env.task_list)
+            '%s\n' % ', '.join([t.name for t in TaskType])
         print(MSG)
         sys.exit()
 
     env = Env()
-    env.set_task_type(argvs[1])
+    ttype = TaskType.Enum_of(argvs[1])
+    if ttype is None:
+        MSG = '\n' + \
+            '[task type] が異なります。以下から選んで指定してください。\n' + \
+            '%s\n' % ', '.join([t.name for t in TaskType])
+        print(MSG)
+        sys.exit()
+
+    env.set_task_type(ttype)
     MSG =  '---- 操作方法 -------------------------------------\n' + \
            '[e] 前に進む [s] 左に90度回る [f] 右に90度回る\n' + \
            '[q] 終了\n' + \
