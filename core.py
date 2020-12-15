@@ -38,12 +38,6 @@ class coreEnv():
         img = np.ones((100, 100, 3), type=np.uint8) * 255  # pylint:disable=unexpected-keyword-arg
         return img
 
-    def seed(self, seed):  # pylint:disable=no-self-use
-        """
-        乱数のシードを指定
-        """
-        np.random.seed(seed)
-
 
 class coreAgt():
     """

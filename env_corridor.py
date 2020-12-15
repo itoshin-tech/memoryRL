@@ -258,8 +258,6 @@ class Env(core.coreEnv):
 
         return img
 
-    def seed(self, seed):
-        np.random.seed(seed)
 
 def show_obs(obs, act, rwd, done):
     """

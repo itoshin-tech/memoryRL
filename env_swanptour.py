@@ -759,8 +759,6 @@ class Env(core.coreEnv):
 
         return img_out
 
-    def seed(self, seed):
-        np.random.seed(seed)
 
 def show_obs(observation, action, reward, dones):
     """
