@@ -20,6 +20,7 @@ class TaskType(Enum):
     Tmaze_either = auto()
     ruin_1swamp = auto()
     ruin_2swamp = auto()
+    mytask = auto() # 自分オリジナル
 
     @classmethod
     def Enum_of(cls, task_str):
@@ -96,7 +97,7 @@ class Env(core.coreEnv):
             ゴールに到達したときの報酬
         maze_type='random': str
             迷路タイプ
-            'random', 'Tmaze', 'Tmaze_large', 'Tmaze_one'
+            'random', 'Tmaze', 'Tmaze_large', 'Tmaze_one', 'fixed_maze01'
         second_visit_penalty: bool
             一度到達すると通れなくなる
         reset_after_subgoal: bool
@@ -265,6 +266,23 @@ class Env(core.coreEnv):
             self.wall_observable = True
             self.step_until_goal_hidden = -1
 
+        elif task_type == TaskType.mytask:  # オリジナル追加
+            self.field_size = 10
+            self.sight_size = 3
+            self.max_time = 200
+            self.n_wall = 10
+            self.n_goal = 5
+            self.start_pos = (4, 4)
+            self.reward_hit_wall = -0.2
+            self.reward_move = -0.1
+            self.reward_goal = 1
+            self.maze_type = 'random'
+            self.second_visit_penalty = False
+            self.reset_after_subgoal = False
+            self.erase_visited_goal = False
+            self.wall_observable = True
+            self.step_until_goal_hidden = -1
+
         else:
             raise ValueError('task_type の処理ができません。')
 
@@ -298,6 +316,7 @@ class Env(core.coreEnv):
                 ]
             self.n_goal = 2
             self.my_maze(maze, start_pos=(2, 3), start_dir=0)
+
         elif self.maze_type == 'Tmaze_large':
             maze = [
                 'g   g',
@@ -308,6 +327,7 @@ class Env(core.coreEnv):
                 ]
             self.n_goal = 2
             self.my_maze(maze, start_pos=(2, 4), start_dir=0)
+
         elif self.maze_type == 'Tmaze_one':
             if np.random.rand() > .5:
                 maze = [
@@ -327,6 +347,7 @@ class Env(core.coreEnv):
                     ]
             self.n_goal = 1
             self.my_maze(maze, start_pos=(2, 3), start_dir=0)
+
         elif self.maze_type == 'fixed_maze01':
             maze = [
                 'wwg  ',

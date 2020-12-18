@@ -131,7 +131,13 @@ if __name__ == '__main__':
         AGT_ANIME_EPSILON = 0.0
 
     else:
-        raise ValueError('task_type の処理ができません。')
+        N_STEP = 5000
+        SHOW_Q_INTERVAL =1000
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = None
+        AGT_EPSILON = 0.4
+        AGT_ANIME_EPSILON = 0.0
+        print('シミュレーションににデフォルトパラメータを設定しました。')
 
     # 学習用環境
     env = envnow.Env()

@@ -18,6 +18,7 @@ class TaskType(Enum):
     L8g34 = auto()
     L8g67 = auto()
     L8g34567 = auto()
+    mytask = auto() # 自分オリジナル
 
     @classmethod
     def Enum_of(cls, task_str):
@@ -137,6 +138,15 @@ class Env(core.coreEnv):
         elif task_type == TaskType.L8g34567:
             self.field_length = 8
             self.goal_candidate = (3, 4, 5, 6, 7)
+            self.pos_start = 0
+            self.reward_fail = 0
+            self.reward_move = 0
+            self.reward_goal = 1
+            self.step_until_goal_hidden = 1
+
+        elif task_type == TaskType.mytask:  # オリジナル追加
+            self.field_length = 20
+            self.goal_candidate = list(range(10, 20))
             self.pos_start = 0
             self.reward_fail = 0
             self.reward_move = 0
