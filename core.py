@@ -2,64 +2,64 @@
 core.py
 EnvとAgtの抽象クラス
 """
-import numpy as np
+from abc import ABCMeta, abstractmethod
 
 
-class coreEnv():
+class coreEnv(metaclass=ABCMeta):
     """
     Envの抽象クラス
     """
-    def __init__(self):
-        pass
 
     def reset(self):
         """
         変数を初期化
         """
 
-    def step(self, action):  # pylint:disable=no-self-use
+    @abstractmethod
+    def step(self, action: int):  # pylint:disable=no-self-use
         """
         action に従って、observationを更新
-        """
-        if action == 0:
-            observation = None
-            reward = None
-            done = None
-        else:
-            observation = None
-            reward = None
-            done = None
-        return observation, reward, done
 
+        Returns
+        -------
+        observation: np.ndarray
+        reward: int
+        done: bool
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
     def render(self):  # pylint:disable=no-self-use
         """
         内部状態に対応したimg を作成
+
+        Returns
+        -------
+        img: np.ndarray((h, w, 3), type=np.uint8)
         """
-        img = np.ones((100, 100, 3), type=np.uint8) * 255  # pylint:disable=unexpected-keyword-arg
-        return img
+        raise NotImplementedError()
 
 
-class coreAgt():
+class coreAgt(metaclass=ABCMeta):
     """
     Agtの抽象クラス
     """
-    def __init__(self):
-        pass
 
     def build_model(self):
         """
         モデル構築(Tensorflow使用時)
         """
 
+    @abstractmethod
     def select_action(self, observation):  # pylint:disable=no-self-use
         """
         observation に基づいてaction を出力
+
+        Returns
+        -------
+        action: int
         """
-        if observation == 0:
-            action = None
-        else:
-            action = None
-        return action
+        raise NotImplementedError()
 
     def get_Q(self, observation):  # pylint:disable=no-self-use
         """
