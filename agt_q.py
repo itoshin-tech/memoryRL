@@ -39,7 +39,7 @@ class Agt(core.coreAgt):
         alpha: float (0から1まで)
             Q学習のα、学習率
         max_memory: int
-            記憶する最大の状態数
+            記憶する最大の観測数
         filepath: str
             セーブ用のファイル名
         """

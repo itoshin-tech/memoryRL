@@ -2,6 +2,7 @@
 sim_swanptour.py
 池巡りの実行ファイル
 """
+import os
 import sys
 import copy
 
@@ -10,6 +11,7 @@ from env_swanptour import TaskType
 import trainer
 import mng_agt_history
 
+SAVE_DIR = 'agt_data'
 
 if __name__ == '__main__':
 
@@ -40,6 +42,10 @@ if __name__ == '__main__':
     process_type = argvs[3]
 
     ENV_NAME = 'env_swanptour'
+
+    # 保存用フォルダの確認・作成 /////////
+    if not os.path.exists(SAVE_DIR):
+        os.mkdir(SAVE_DIR)
 
     # process_type /////////////////////
 
@@ -156,7 +162,7 @@ if __name__ == '__main__':
         'epsilon': AGT_EPSILON,
         'input_size': obs.shape,
         'n_action': env.n_action,
-        'filepath': 'agt_data/sim_' + \
+        'filepath': SAVE_DIR + '/sim_' + \
                     ENV_NAME + '_' + \
                     agt_type + '_' + \
                     task_type.name
