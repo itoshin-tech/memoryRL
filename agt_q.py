@@ -84,7 +84,7 @@ class Agt(core.coreAgt):
             self.Q[observation] = [self.init_val_Q] * self.n_action
             self.len_Q += 1
             if self.len_Q > self.max_memory:
-                print('Qの大きさが上限 %d に達しました。' % self.max_memory)
+                print('新規の観測数が上限 %d に達しました。' % self.max_memory)
                 sys.exit()
             if (self.len_Q < 100 and self.len_Q % 10 == 0) or (self.len_Q % 100 == 0):
                 print('used memory for Q-table --- %d' % self.len_Q)

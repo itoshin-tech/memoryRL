@@ -85,7 +85,7 @@ if __name__ == '__main__':
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
-        EARY_STOP_REWARD = 1
+        EARY_STOP_REWARD = None
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         N_STEP = 5000
         SHOW_Q_INTERVAL =200
         EARY_STOP_STEP = None
-        EARY_STOP_REWARD = 1
+        EARY_STOP_REWARD = None
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
