@@ -121,6 +121,15 @@ if __name__ == '__main__':
         AGT_EPSILON = 0.4
         AGT_ANIME_EPSILON = 0.0
 
+        """
+    elif task_type == TaskType.mytask:  # mytaskのパラメータ追加
+        N_STEP = 5000
+        SHOW_Q_INTERVAL =200
+        EARY_STOP_STEP = None
+        EARY_STOP_REWARD = 1
+        AGT_EPSILON = 0.4
+        AGT_ANIME_EPSILON = 0.0
+        """
     else:
         N_STEP = 5000
         SHOW_Q_INTERVAL =200

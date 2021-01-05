@@ -18,7 +18,7 @@ class TaskType(Enum):
     L8g34 = auto()
     L8g67 = auto()
     L8g34567 = auto()
-    mytask = auto() # 自分オリジナル
+    # mytask = auto() # オリジナルタスクを追加
 
     @classmethod
     def Enum_of(cls, task_str):
@@ -144,6 +144,7 @@ class Env(core.coreEnv):
             self.reward_goal = 1
             self.step_until_goal_hidden = 1
 
+            """
         elif task_type == TaskType.mytask:  # オリジナル追加
             self.field_length = 20
             self.goal_candidate = list(range(10, 20))
@@ -152,7 +153,8 @@ class Env(core.coreEnv):
             self.reward_move = 0
             self.reward_goal = 1
             self.step_until_goal_hidden = 1
-
+            """
+            
         else:
             raise ValueError('task_type の処理ができません。')
 
